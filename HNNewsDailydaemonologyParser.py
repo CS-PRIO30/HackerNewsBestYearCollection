@@ -37,5 +37,5 @@ schedule.every().day.at("6:00").do( getHNentries )
 
 while True:
     schedule.run_pending()
-    time.sleep(1)
+    time.sleep(1800)
 
