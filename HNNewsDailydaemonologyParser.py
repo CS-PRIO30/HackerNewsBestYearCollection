@@ -33,7 +33,7 @@ def getHNentries():
 	except Exception as e:
 		print(e)
 
-schedule.every().day.at("6:00").do( getHNentries )
+schedule.every().day.at("3:40").do( getHNentries )
 
 while True:
     schedule.run_pending()
