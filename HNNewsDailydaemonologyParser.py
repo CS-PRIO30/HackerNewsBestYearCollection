@@ -10,14 +10,11 @@ TOKEN_TELEGRAM = os.environ['TOKEN_TELEGRAM'] #HN_TG_BOT
 HOUR_I_WANNA_GET_MESSAGE = int( os.environ['HOUR_I_WANNA_GET_MESSAGE'] )
 MINUTES_I_WANNA_GET_MESSAGE = int( os.environ['MINUTE_I_WANNA_GET_MESSAGE'] )
 chat_id = int( os.environ['chat_id'] )
-try:
-    update_id = bot.getUpdates()[0].update_id
-except IndexError:
-	update_id = None
-def start():
+
+def start( bot, update ):
 	bot.sendMessage("Successfully subscribed.\nYou will get news every day at {}:{}.\n\nHave fun!".format( HOUR_I_WANNA_GET_MESSAGE, MINUTES_I_WANNA_GET_MESSAGE ))
 	
-def getHNentries():
+def getHNentries( bot, job ):
 	try:
 		for year in range(2010, int( datetime.datetime.now().strftime("%Y") ) + 1 ): # + 1 including this year
 			text = ""
@@ -47,7 +44,7 @@ utc_offset_heroku = time.localtime().tm_gmtoff / 3600
 hour = HOUR_I_WANNA_GET_MESSAGE + ( int(utc_offset_heroku) - 2 ) # 2 is my offset
 time2 = datetime.time(hour ,MINUTES_I_WANNA_GET_MESSAGE)
 
-j.run_daily(sendNews, time2 )
+j.run_daily(getHNentries, time2 )
 
 updater.start_polling()
 updater.idle()
