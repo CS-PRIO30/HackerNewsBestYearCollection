@@ -52,3 +52,4 @@ j.run_daily(sendNews, time2 )
 updater.start_polling()
 updater.idle()
 
+#end
