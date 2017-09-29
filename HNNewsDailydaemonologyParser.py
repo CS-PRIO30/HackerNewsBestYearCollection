@@ -12,7 +12,7 @@ MINUTES_I_WANNA_GET_MESSAGE = int( os.environ['MINUTE_I_WANNA_GET_MESSAGE'] )
 chat_id = int( os.environ['chat_id'] )
 
 def start( bot, update ):
-	bot.sendMessage("Successfully subscribed.\nYou will get news every day at {}:{}.\n\nHave fun!".format( HOUR_I_WANNA_GET_MESSAGE, MINUTES_I_WANNA_GET_MESSAGE ))
+	bot.sendMessage( chat_id = update.message.chat_id, text = "Successfully subscribed.\nYou will get news every day at {}:{}.\n\nHave fun!".format( HOUR_I_WANNA_GET_MESSAGE, MINUTES_I_WANNA_GET_MESSAGE ))
 	
 def getHNentries( bot, job ):
 	try:
@@ -29,7 +29,7 @@ def getHNentries( bot, job ):
 			bsObjComment = BeautifulSoup(html,"html.parser").findAll("div",{"class":"content"})[0].findAll("span",{"class":"commentlink"})
 			for i in range( len(bsObj) ):
 				text = text + '<b>{}</b>\n<a href="{}">{}</a>     <a href="{}">{}</a>\n'.format(bsObj[i].text, bsObj[i].a.attrs["href"],"[article]", bsObjComment[i].a.attrs["href"] ,"(comments)")
-			text = "<b>" + date.strftime("%d/%m/") + str(year) + "</b>\n" + "\n" + text
+			text = "<b>" + date.strftime("%d/%m/") + str(year) + "</b>\n\n" + text
 			bot.sendMessage(parse_mode = "Html", text = text, chat_id = chat_id, disable_web_page_preview = True)
 	except Exception as e:
 		print(e)
