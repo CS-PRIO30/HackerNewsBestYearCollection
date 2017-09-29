@@ -4,7 +4,7 @@ import datetime
 import telegram
 import time
 import os
-
+from telegram.ext import *
 
 TOKEN_TELEGRAM = os.environ['TOKEN_TELEGRAM'] #HN_TG_BOT
 HOUR_I_WANNA_GET_MESSAGE = int( os.environ['HOUR_I_WANNA_GET_MESSAGE'] )
