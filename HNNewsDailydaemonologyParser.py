@@ -2,40 +2,53 @@ from bs4 import BeautifulSoup
 from urllib.request import urlopen
 import datetime
 import telegram
-import schedule
 import time
+import os
 
-TOKEN_TELEGRAM = '335844830:AAFHubomXjxZD4DlVsW9ql5zHLt9f1Cutyo' #HN_TG_BOT
-bot = telegram.Bot( TOKEN_TELEGRAM )
+
+TOKEN_TELEGRAM = os.environ['TOKEN_TELEGRAM'] #HN_TG_BOT
+HOUR_I_WANNA_GET_MESSAGE = int( os.environ['HOUR'] )
+MINUTES_I_WANNA_GET_MESSAGE = int( os.environ['MINUTE'] )
 
 try:
     update_id = bot.getUpdates()[0].update_id
 except IndexError:
 	update_id = None
-chat_id = 31923577
-
+def start():
+	bot.sendMessage("Successfully subscribed.\nYou will get news every day at {}:{}.\n\nHave fun!".format( HOUR_I_WANNA_GET_MESSAGE, MINUTES_I_WANNA_GET_MESSAGE ))
+	
 def getHNentries():
 	try:
 		for year in range(2010, int( datetime.datetime.now().strftime("%Y") ) + 1 ): # + 1 including this year
 			text = ""
 			date = datetime.datetime.now() - datetime.timedelta( days = 1 )
 			url = 'http://www.daemonology.net/hn-daily/{}-{}.html'.format( year, date.strftime("%m-%d") )
-			print(url)
+			#print(url)
 			try:
 				html = urlopen( url ).read()
 			except Exception as e:
 				continue
 			bsObj = BeautifulSoup(html,"html.parser").findAll("div",{"class":"content"})[0].findAll("span",{"class":"storylink"})
-			for item in bsObj:
-				text = text + '<b>{}</b> (<a href="{}">{}</a>)\n\n'.format(item.text,item.a.attrs["href"],"link")
+			bsObjComment = BeautifulSoup(html,"html.parser").findAll("div",{"class":"content"})[0].findAll("span",{"class":"commentlink"})
+			for i in range len(bsObj):
+				text = text + '<b>{}</b>\n<a href="{}">{}</a>     <a href="{}">{}</a>\n\n'.format(bsObj[i].text, bsObj[i].a.attrs["href"],"[article]", bsObjComment[i].a.attrs["href"] ,"(comments)")
 			text = "<b>" + date.strftime("%d/%m/") + str(year) + "</b>\n" + "\n" + text
 			bot.sendMessage(parse_mode = "Html", text = text, chat_id = chat_id, disable_web_page_preview = True)
 	except Exception as e:
 		print(e)
 
-schedule.every().day.at("2:20").do( getHNentries )
+updater = Updater(TOKEN_TELEGRAM) 
+dp = updater.dispatcher
+updater.dispatcher.add_handler(CommandHandler('start', start))
 
-while True:
-    schedule.run_pending()
-    time.sleep(1801)
+j = updater.job_queue
+
+utc_offset_heroku = time.localtime().tm_gmtoff / 3600
+hour = HOUR_I_WANNA_GET_MESSAGE + ( int(utc_offset_heroku) - 2 ) # 2 is my offset
+time2 = datetime.time(hour ,MINUTES_I_WANNA_GET_MESSAGE)
+
+j.run_daily(sendNews, time2 )
+
+updater.start_polling()
+updater.idle()
 
