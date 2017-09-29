@@ -48,5 +48,3 @@ j.run_daily(getHNentries, time2 )
 
 updater.start_polling()
 updater.idle()
-
-#end
