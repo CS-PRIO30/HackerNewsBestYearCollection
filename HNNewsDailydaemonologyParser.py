@@ -8,7 +8,7 @@ import os
 
 TOKEN_TELEGRAM = os.environ['TOKEN_TELEGRAM'] #HN_TG_BOT
 HOUR_I_WANNA_GET_MESSAGE = int( os.environ['HOUR_I_WANNA_GET_MESSAGE'] )
-MINUTES_I_WANNA_GET_MESSAGE = int( os.environ['MINUTES_I_WANNA_GET_MESSAGE'] )
+MINUTES_I_WANNA_GET_MESSAGE = int( os.environ['MINUTE_I_WANNA_GET_MESSAGE'] )
 chat_id = int( os.environ['chat_id'] )
 try:
     update_id = bot.getUpdates()[0].update_id
