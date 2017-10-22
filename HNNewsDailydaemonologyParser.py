@@ -26,11 +26,15 @@ def getHNentries( bot, job ):
 			except Exception as e:
 				continue
 			bsObj = BeautifulSoup(html,"html.parser").findAll("div",{"class":"content"})[0].findAll("span",{"class":"storylink"})
-			bsObjComment = BeautifulSoup(html,"html.parser").findAll("div",{"class":"content"})[0].findAll("span",{"class":"commentlink"})
+			try:
+				bsObjComment = BeautifulSoup(html,"html.parser").findAll("div",{"class":"content"})[0].findAll("span",{"class":"commentlink"})
+			except Exception as e:
+				bsObjComment = BeautifulSoup(html,"html.parser").findAll("div",{"class":"content"})[0].findAll("span",{"class":"postlink"})
 			for i in range( len(bsObj) ):
-				text = text + '<b>{}</b>\n<a href="{}">{}</a>     <a href="{}">{}</a>\n'.format(bsObj[i].text, bsObj[i].a.attrs["href"],"[article]", bsObjComment[i].a.attrs["href"] ,"(comments)")
+				text = text + '<b>{}</b>\n<a href="{}">{}</a>     <a href="{}">{}</a>\n\n'.format(bsObj[i].text, bsObj[i].a.attrs["href"],"[article]", bsObjComment[i].a.attrs["href"] ,"(comments)")
 			text = "<b>" + date.strftime("%d/%m/") + str(year) + "</b>\n\n" + text
 			bot.sendMessage(parse_mode = "Html", text = text, chat_id = chat_id, disable_web_page_preview = True)
+			time.sleep(1)
 	except Exception as e:
 		print(e)
 
