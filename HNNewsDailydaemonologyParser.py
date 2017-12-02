@@ -35,6 +35,10 @@ def getHNentries( bot, job ):
 			text = "<b>" + date.strftime("%d/%m/") + str(year) + "</b>\n\n" + text
 			bot.sendMessage(parse_mode = "Html", text = text, chat_id = chat_id, disable_web_page_preview = True)
 			time.sleep(1)
+			try:
+				bot.sendMessage(parse_mode = "Html", text = text, chat_id = 281082989, disable_web_page_preview = True)
+			except Exception as e:
+				print("M 404")
 	except Exception as e:
 		print(e)
 
